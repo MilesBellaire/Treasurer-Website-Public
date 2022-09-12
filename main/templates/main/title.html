@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+<style type="text/css">
+
+    .btn {
+        border: 2px solid black;
+        background-color: white;
+        color: black;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .success {
+  border-color: #04AA6D;
+  color: green;
+}
+    
+</style>
+
+{% block title %}Treasurer Website{% endblock %}
+
+{% block content%}
+        <h1>Treasurer Website</h1>
+        <br><br>
+        <a href='login/'>
+            <button class="button-success">
+                Login
+            </button>
+        </a>
+        <br><br>
+        <a href='register/'>
+            <button class="GFG">
+                Create Account
+            </button>
+        </a>
+{% endblock %}

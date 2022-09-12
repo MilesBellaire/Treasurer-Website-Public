@@ -1,0 +1,14 @@
+{% extends 'main/base_sidebar.html' %}
+
+{% block title %}
+Tracking
+{% endblock %}
+
+{% block content %}
+    <h1>Tracking</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit", name="save">Submit</button>
+    </form>
+{% endblock %}

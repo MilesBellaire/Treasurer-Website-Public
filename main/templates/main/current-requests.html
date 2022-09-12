@@ -1,0 +1,117 @@
+{% extends 'main/base_sidebar.html' %}
+
+{% block title %}
+Current Requests
+{% endblock %}
+
+{% block content %}
+<style type="text/css">
+
+    .request{
+        border-bottom: 1px solid rgb(0, 0, 0);
+        padding: 10px;
+        display: flex;
+    }
+    
+    .arrow {
+        border: solid black;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+    }
+
+    .up {
+        transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+    }
+
+    .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+    }
+    
+    .date{width: 10%; inline-size: 10%; overflow-wrap: break-word;}
+    .name{width:20%; inline-size: 20%; overflow-wrap: break-word;}
+    .reason{width:35%; inline-size: 35%; overflow-wrap: break-word;}
+    .approve{width:20%; inline-size: 20%; overflow-wrap: break-word;}
+    .amount{width:15%; inline-size: 17%; overflow-wrap: break-word;}
+
+    .small_br{display: block;margin: 2px;}    
+
+</style>
+<h1>Current Requests</h1>
+<div> 
+    <form method="POST">
+        {% csrf_token %}
+        Sort by:
+        <select type="submit" name="Sorting">
+            <option value="{{order}}">{{Order}}</option>
+            <option value="date">Date</option>
+            <option value="declined">Declined</option>
+            <option value="amount">Amount</option>
+            <option value="approved">Status</option>
+        </select>
+        
+            {% if reversed %}
+            <button type="submit" name="reverse" >
+                <i class="arrow up"></i>
+            </button>
+            {% else %}
+            <button type="submit" name="order">
+                <i class="arrow down"></i>
+            </button>
+            {% endif %}
+        </button>
+    </form>
+</div>
+<div class="request">
+    <p>
+        <div class="date">Date</div>
+        <div class="name">Name</div>
+        <div class="reason">Reason</div>
+        <div class="amount">Amount</div>
+        <div class="approve">Status</div>
+    </p>
+</div>
+<form method="post" action="/current-requests/">
+    {% csrf_token %}
+        {% if requests.count > 0 %}
+            {% for request in requests %}
+                <div class="request">
+                    <p>
+                        <div class="date">{{request.date}}</div>
+                        <div class="name">{{request.user.first_name}} {{request.user.last_name}}<br>To: {{request.payable_to}}</div>
+                        <div class="reason">{{request.reason}}</div>
+                        <div class="amount">${{request.amount}}<br><a target="_blank" href=/{{request.receipt}}>Receipt</a></div>
+                        <div class="approve"> 
+                            {% if request.approved %} 
+                                Approved 
+                            {% elif request.declined%}
+                                Declined
+                            {% elif is_staff %}
+                                <button type="submit" 
+                                        name="Approved" 
+                                        value="{{request.id}}"
+                                        onclick="return confirm('Are you sure you want to approve {{request.user.first_name}} {{request.user.last_name}}\'s request?')"
+                                        >Approve</button>
+                                <br>
+                                <button type="submit" 
+                                        name="Declined" 
+                                        value="{{request.id}}"
+                                        onclick="return confirm('Are you sure you want to Decline {{request.user.first_name}} {{request.user.last_name}}\'s request?')"
+                                        >Decline</button>
+                            {% else %}
+                                Waiting
+                            {% endif %}
+                        </div>
+                    </p>
+                </div>
+            {% endfor%}
+        {% else %}
+            <br>
+            <br>
+            <font size="+2%">No Requests Found</font>
+        {% endif %}
+</form>
+
+{% endblock %}
